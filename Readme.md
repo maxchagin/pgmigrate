@@ -50,7 +50,7 @@ package main
 import (
 	"log"
 
-	"pgmigrate"
+	"github.com/maxchagin/pgmigrate"
 )
 
 func main() {
@@ -77,7 +77,7 @@ import (
 	"fmt"
 	"log"
 
-	"pgmigrate"
+	"github.com/maxchagin/pgmigrate"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -111,7 +111,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"pgmigrate"
+	"github.com/maxchagin/pgmigrate"
 
 	"github.com/jackc/pgx/v4"
 )
