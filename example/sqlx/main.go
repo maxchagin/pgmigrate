@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"pgmigrate"
+	"github.com/maxchagin/pgmigrate"
 
 	"github.com/jmoiron/sqlx"
 )

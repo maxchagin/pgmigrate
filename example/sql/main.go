@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"pgmigrate"
+	"github.com/maxchagin/pgmigrate"
 )
 
 func main() {

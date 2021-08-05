@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"pgmigrate"
+
+	"github.com/maxchagin/pgmigrate"
 
 	"github.com/jackc/pgx/v4"
 )

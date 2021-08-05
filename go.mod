@@ -1,4 +1,4 @@
-module pgmigrate
+module github.com/maxchagin/pgmigrate
 
 go 1.16
 
