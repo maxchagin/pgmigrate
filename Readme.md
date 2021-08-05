@@ -32,7 +32,7 @@ Or timestamps resolution:
 1627628025_create_table.up.sql - up migration
 1627628025_create_table.down.sql - down migration
 ```
-See more [example](https://github.com/maxchagin/pgmigrate/migrations)
+See more [example](https://github.com/maxchagin/pgmigrate/tree/master/migrations)
 
 ## Run migrations
 The following methods are supported:   
