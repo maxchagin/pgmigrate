@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	m, err := pgmigrate.New("./migrations", "localhost", "5432", "root", "test", "root", "disable", map[string]string{
+	m, err := pgmigrate.New("./../../migrations", "localhost", "5432", "root", "test", "root", "disable", map[string]string{
 		"search_path":      "test",
 		"application_name": "test",
 	})

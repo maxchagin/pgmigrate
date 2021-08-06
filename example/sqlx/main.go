@@ -16,7 +16,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	m := pgmigrate.CompatibleWithSqlx(
-		"./migrations",
+		"./../../migrations",
 		&pgmigrate.Sqlx{
 			DB: connSqlx,
 		})

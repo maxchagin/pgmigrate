@@ -43,7 +43,23 @@ The following methods are supported:
 `Version()` - get the current version of the migration;
 
 ## Example Usage
+Clone project   
+```
+cd work_dir
+git clone https://github.com/maxchagin/pgmigrate
+cd pgmigrate
+```
+Run PostgreSQL in docker
+```
+docker compose -f ./example/docker-compose.yml up
+```
+
 ### With [sql](https://pkg.go.dev/database/sql)
+Go to example
+```
+cd ./example/sql
+go run main.go
+```
 ```go
 package main
 
@@ -70,6 +86,11 @@ func main() {
 ```
 
 ### Compatible with [sqlx](https://github.com/jmoiron/sqlx)
+Go to example
+```
+cd ./example/sqlx
+go run main.go
+```
 ```go
 package main
 
@@ -103,6 +124,11 @@ func main() {
 ```
 
 ### Compatible with [pgx](https://github.com/jackc/pgx)
+Go to example
+```
+cd ./example/pgx
+go run main.go
+```
 
 ```go
 package main
