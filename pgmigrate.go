@@ -10,12 +10,6 @@ import (
 	"strings"
 )
 
-// const (
-// 	infoColor    = "\033[0;36m%s\033[0m\n"
-// 	warningColor = "\033[1;33m%s\033[0m\n"
-// 	errorColor   = "\033[1;31m%s\033[0m\n"
-// )
-
 const (
 	checkSchemaExistStmt = `SELECT EXISTS (
 		SELECT schema_name FROM information_schema.schemata
@@ -137,7 +131,7 @@ func (m *Migrate) runUp() error {
 		return err
 	}
 	if countFiles == 0 {
-		fmt.Printf("warning: %s\n", "No change files")
+		fmt.Printf("notice: %s\n", "no new files to migrate")
 		return nil
 	}
 	// maximum number of versions
@@ -169,7 +163,7 @@ func (m *Migrate) runDown() error {
 		return err
 	}
 	if countFiles == 0 {
-		fmt.Printf("warning: %s\n", "No change files")
+		fmt.Printf("notice: %s\n", "no new files to migrate")
 		return nil
 	}
 	// maximum number of versions
@@ -331,11 +325,11 @@ func (m *Migrate) migrateFromFile(filePath string) error {
 
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Printf("error: file %s read error: %s (skipped)\n", err, filePath)
+		fmt.Printf("error: file %s read error: %s (skipped)\n", err, file.Name())
 		return nil
 	}
 	if string(b) == "" {
-		fmt.Printf("warning: file is empty: %s (skipped)\n", filePath)
+		fmt.Printf("warning: file %s is empty (skipped)\n", file.Name())
 		return nil
 	}
 	// execute a query on the server
