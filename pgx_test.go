@@ -30,7 +30,7 @@ func OpenPgxConn() (*pgx.Conn, error) {
 	return db, nil
 }
 
-func TestPgxUpAndDown(t *testing.T) {
+func TestPgxUp(t *testing.T) {
 	ConnPgx, err := OpenPgxConn()
 	if err != nil {
 		t.Error(err)
@@ -45,11 +45,18 @@ func TestPgxUpAndDown(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	// go to 2
-	// err = m.Goto(2)
-	// if err != nil {
-	// 	t.Error(err)
-	// }
+}
+
+func TestPgxDown(t *testing.T) {
+	ConnPgx, err := OpenPgxConn()
+	if err != nil {
+		t.Error(err)
+	}
+	m := CompatibleWithPgx(
+		"./migrations",
+		&Pgx{
+			DB: ConnPgx,
+		})
 	// down to 0
 	err = m.Down()
 	if err != nil {

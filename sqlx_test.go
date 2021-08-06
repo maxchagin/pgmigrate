@@ -13,7 +13,7 @@ func OpenSqlxConn() (*sqlx.DB, error) {
 	return sqlx.Connect("postgres", connStr)
 }
 
-func TestSqlxUpAndDown(t *testing.T) {
+func TestSqlxUp(t *testing.T) {
 	ConnSqlx, err := OpenSqlxConn()
 	if err != nil {
 		t.Error(err)
@@ -28,11 +28,18 @@ func TestSqlxUpAndDown(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	// go to 2
-	// err = m.Goto(2)
-	// if err != nil {
-	// 	t.Error(err)
-	// }
+}
+
+func TestSqlxDown(t *testing.T) {
+	ConnSqlx, err := OpenSqlxConn()
+	if err != nil {
+		t.Error(err)
+	}
+	m := CompatibleWithSqlx(
+		"./migrations",
+		&Sqlx{
+			DB: ConnSqlx,
+		})
 	// down to 0
 	err = m.Down()
 	if err != nil {
