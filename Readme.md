@@ -7,7 +7,6 @@ The package is compatible with library [sqlx](https://github.com/jmoiron/sqlx) a
 ## Installation
 The package require a Go version with modules support
 ```
-go mod init github.com/my/repo
 go get github.com/maxchagin/pgmigrate
 ```
 
