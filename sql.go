@@ -122,11 +122,10 @@ func (s *Sql) CreateMigrateTable() error {
 }
 
 // UpdateMigrateTable updating the pg migrations table
-func (s *Sql) UpdateMigrateTable(version int) error {
-	var dirty bool
-	err := s.DB.QueryRow(updateMigrateTableStmt, version).Scan(&dirty)
-	if err != nil {
-		return fmt.Errorf("%v: %v", errUpdateMigrateTable, err)
+func (s *Sql) UpdateMigrateTable(version int, dirty bool) error {
+	row := s.DB.QueryRow(updateMigrateTableStmt, version, dirty)
+	if row.Err() != nil {
+		return fmt.Errorf("%v: %v", errUpdateMigrateTable, row.Err())
 	}
 	return nil
 }

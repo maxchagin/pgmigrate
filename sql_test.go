@@ -14,8 +14,8 @@ func TestSqlUp(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	// down to 0
-	err = m.Down()
+	// up to 0
+	err = m.Up()
 	if err != nil {
 		t.Error(err)
 	}

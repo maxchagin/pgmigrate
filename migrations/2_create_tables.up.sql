@@ -1,4 +1,4 @@
-BEGIN;
+
 --
 -- Table articles
 --
@@ -35,5 +35,3 @@ CREATE TABLE IF NOT EXISTS articles_tags
     UNIQUE (id),
     UNIQUE (article_id, tag_id)
 );
-
-COMMIT;

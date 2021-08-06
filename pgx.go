@@ -73,9 +73,8 @@ func (s *Pgx) CreateMigrateTable() error {
 }
 
 // UpdateMigrateTable updating the pg migrations table
-func (s *Pgx) UpdateMigrateTable(version int) error {
-	var dirty bool
-	err := s.DB.QueryRow(context.Background(), updateMigrateTableStmt, version).Scan(&dirty)
+func (s *Pgx) UpdateMigrateTable(version int, dirty bool) error {
+	_, err := s.DB.Query(context.Background(), updateMigrateTableStmt, version, dirty)
 	if err != nil {
 		return fmt.Errorf("%v: %v", errUpdateMigrateTable, err)
 	}

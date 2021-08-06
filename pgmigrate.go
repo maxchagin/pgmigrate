@@ -19,24 +19,24 @@ const (
 const (
 	checkSchemaExistStmt = `SELECT EXISTS (
 		SELECT schema_name FROM information_schema.schemata
-		WHERE schema_name = (SELECT current_schema()))`
+		WHERE schema_name = (SELECT current_schema()));`
 
-	currentSchemaStmt = `SELECT current_schema()`
+	currentSchemaStmt = `SELECT current_schema();`
 
 	checkMigrateTableExistStmt = `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = (SELECT current_schema())
-		AND    table_name   = 'pg_migrations')`
+		AND    table_name   = 'pg_migrations');`
 
 	createMigrateTableStmt = `CREATE TABLE IF NOT EXISTS pg_migrations (
 			"version"    integer NOT NULL,
 			"dirty"      boolean
 		);
-		INSERT INTO pg_migrations (version, dirty) VALUES (0, false)`
+		INSERT INTO pg_migrations (version, dirty) VALUES (0, false);`
 
-	updateMigrateTableStmt = `UPDATE pg_migrations SET version = $1 RETURNING dirty`
+	updateMigrateTableStmt = `UPDATE pg_migrations SET version = $1, dirty = $2;`
 
-	currentVersionStmt = `SELECT * FROM pg_migrations LIMIT 1`
+	currentVersionStmt = `SELECT * FROM pg_migrations LIMIT 1;`
 )
 
 // DBWorker database interface
@@ -46,7 +46,7 @@ type DBWorker interface {
 	CheckMigrateTableExist() (bool, error)
 	CurrentVersion() (int, bool, error)
 	CreateMigrateTable() error
-	UpdateMigrateTable(int) error
+	UpdateMigrateTable(int, bool) error
 	ExecMigration(string) error
 }
 
@@ -56,8 +56,9 @@ type Migrate struct {
 	DB                DBWorker
 	step              int
 	skip              []int
-	gotov             int // goto version
-	version           int // current version
+	gotov             int  // goto version
+	version           int  // current version
+	dirty             bool // dirty version
 	migrateTableExist bool
 }
 
@@ -154,6 +155,7 @@ func (m *Migrate) runUp() error {
 		err := m.migrateFromFile(m.Path + "/" + file.FileName)
 		if err != nil {
 			fmt.Printf(errorColor, err)
+			m.dirty = true
 			break
 		}
 		m.version = file.Version
@@ -185,6 +187,7 @@ func (m *Migrate) runDown() error {
 		err := m.migrateFromFile(m.Path + "/" + file.FileName)
 		if err != nil {
 			fmt.Printf(errorColor, err)
+			m.dirty = true
 			break
 		}
 		m.version = file.Version - 1
@@ -232,7 +235,7 @@ func (m *Migrate) complete() error {
 			return err
 		}
 	}
-	err = m.DB.UpdateMigrateTable(m.version)
+	err = m.DB.UpdateMigrateTable(m.version, m.dirty)
 	if err != nil {
 		return err
 	}
