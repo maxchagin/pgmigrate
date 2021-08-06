@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-const (
-	infoColor    = "\033[0;36m%s\033[0m\n"
-	warningColor = "\033[1;33m%s\033[0m\n"
-	errorColor   = "\033[1;31m%s\033[0m\n"
-)
+// const (
+// 	infoColor    = "\033[0;36m%s\033[0m\n"
+// 	warningColor = "\033[1;33m%s\033[0m\n"
+// 	errorColor   = "\033[1;31m%s\033[0m\n"
+// )
 
 const (
 	checkSchemaExistStmt = `SELECT EXISTS (
@@ -137,7 +137,7 @@ func (m *Migrate) runUp() error {
 		return err
 	}
 	if countFiles == 0 {
-		fmt.Printf(warningColor, "No change files")
+		fmt.Printf("warning: %s\n", "No change files")
 		return nil
 	}
 	// maximum number of versions
@@ -149,12 +149,12 @@ func (m *Migrate) runUp() error {
 
 	for _, file := range files[0:maxStep] {
 		if skipStep(file.Version, m.skip) {
-			fmt.Printf(warningColor, "File "+file.FileName+" marked as skipped")
+			fmt.Printf("notice: %s marked as skipped\n", file.FileName)
 			continue
 		}
 		err := m.migrateFromFile(m.Path + "/" + file.FileName)
 		if err != nil {
-			fmt.Printf(errorColor, err)
+			fmt.Printf("error: %s, %s\n", file.FileName, err)
 			m.dirty = true
 			break
 		}
@@ -169,7 +169,7 @@ func (m *Migrate) runDown() error {
 		return err
 	}
 	if countFiles == 0 {
-		fmt.Printf(warningColor, "No change files")
+		fmt.Printf("warning: %s\n", "No change files")
 		return nil
 	}
 	// maximum number of versions
@@ -181,12 +181,12 @@ func (m *Migrate) runDown() error {
 
 	for _, file := range files[0:maxStep] {
 		if skipStep(file.Version, m.skip) {
-			fmt.Printf(warningColor, "File "+file.FileName+" marked as skipped")
+			fmt.Printf("notice: %s marked as skipped\n", file.FileName)
 			continue
 		}
 		err := m.migrateFromFile(m.Path + "/" + file.FileName)
 		if err != nil {
-			fmt.Printf(errorColor, err)
+			fmt.Printf("error: %s, %s\n", file.FileName, err)
 			m.dirty = true
 			break
 		}
@@ -209,14 +209,14 @@ func (m *Migrate) prepare() *Migrate {
 	var err error
 	m.migrateTableExist, err = m.DB.CheckMigrateTableExist()
 	if err != nil {
-		fmt.Printf(errorColor, err)
+		fmt.Printf("error: %s\n", err)
 		return nil
 	}
 	// if the migrations table exists, get the current version of migrations
 	if m.migrateTableExist {
 		m.version, _, err = m.DB.CurrentVersion()
 		if err != nil {
-			fmt.Printf(errorColor, err)
+			fmt.Printf("error: %s\n", err)
 			return nil
 		}
 	}
@@ -224,7 +224,7 @@ func (m *Migrate) prepare() *Migrate {
 }
 
 func (m *Migrate) complete() error {
-	defer fmt.Println("Now version:", m.version)
+	defer fmt.Printf("Now version: %d, dirty: %t", m.version, m.dirty)
 	_, err := m.DB.CheckSchemaExist()
 	if err != nil {
 		return err
@@ -261,7 +261,7 @@ func (m *Migrate) getFilesUp() ([]Files, int, error) {
 		if strings.Contains(f.Name(), ".up.sql") {
 			fileVersion, err := fileVersion(f.Name())
 			if err != nil {
-				fmt.Printf(warningColor, err.Error()+" (skipped)")
+				fmt.Printf("notice: %s (skipped)\n", err.Error())
 				continue
 			}
 			if fileVersion > m.version {
@@ -290,7 +290,7 @@ func (m *Migrate) getFilesDown() ([]Files, int, error) {
 		if strings.Contains(f.Name(), ".down.sql") {
 			fileVersion, err := fileVersion(f.Name())
 			if err != nil {
-				fmt.Printf(warningColor, err.Error()+" (skipped)")
+				fmt.Printf("notice: %s (skipped)\n", err.Error())
 				continue
 			}
 			if fileVersion <= m.version {
@@ -331,11 +331,11 @@ func (m *Migrate) migrateFromFile(filePath string) error {
 
 	b, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Printf(warningColor, "File read error: "+err.Error()+" "+filePath+" (skipped)")
+		fmt.Printf("error: file %s read error: %s (skipped)\n", err, filePath)
 		return nil
 	}
 	if string(b) == "" {
-		fmt.Printf(warningColor, "File is empty: "+filePath+" (skipped)")
+		fmt.Printf("warning: file is empty: %s (skipped)\n", filePath)
 		return nil
 	}
 	// execute a query on the server
@@ -348,8 +348,8 @@ func (m *Migrate) migrateFromFile(filePath string) error {
 }
 
 func outputStarted() {
-	fmt.Printf(infoColor, "\n****** Migration started *****\n")
+	fmt.Printf("\n%s\n\n", "****** Migration started *****")
 }
 func outputCompleted() {
-	fmt.Printf(infoColor, "\n****** Migration completed *****\n")
+	fmt.Printf("\n%s\n", "****** Migration completed *****")
 }
