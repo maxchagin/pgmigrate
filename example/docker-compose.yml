@@ -10,12 +10,3 @@ services:
       POSTGRES_DB: test
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_test
-    ports:
-      - 5065:80
-    environment:
-      PGADMIN_DEFAULT_EMAIL: dev@rg.ru
-      PGADMIN_DEFAULT_PASSWORD: 159753
